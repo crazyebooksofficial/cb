@@ -488,7 +488,13 @@
     }
     inputBar.addEventListener("submit", function (e) { e.preventDefault(); send(input.value); });
 
+    // Back button: opening the chat adds one history entry; Back pops it and just closes the chat.
+    var chatEntry = false, skipPop = false;
     function open() {
+      if (!panel.hidden) return;
+      try {
+        if (!chatEntry) { history.pushState(Object.assign({}, history.state || {}, { cecb: 1 }), "", location.href); chatEntry = true; }
+      } catch (e) {}
       panel.hidden = false; fab.style.display = "none";
       startLookup();
       if (!greeted) {
@@ -503,7 +509,21 @@
         setTimeout(function () { input.focus(); }, 220);
       }
     }
-    function close() { panel.hidden = true; fab.style.display = ""; fab.focus(); }
+    function hidePanel() { panel.hidden = true; fab.style.display = ""; try { fab.focus(); } catch (e) {} }
+    function close() {
+      hidePanel();
+      if (chatEntry) {
+        chatEntry = false; skipPop = true;
+        try { history.back(); } catch (e) { skipPop = false; }
+        setTimeout(function () { skipPop = false; }, 800);
+      }
+    }
+    // Capture phase + stopImmediatePropagation: the site's own back guard (Stay/Exit popup,
+    // window switcher) must not react to the chat's history entry.
+    window.addEventListener("popstate", function (e) {
+      if (chatEntry) { chatEntry = false; hidePanel(); e.stopImmediatePropagation(); }
+      else if (skipPop) { skipPop = false; e.stopImmediatePropagation(); }
+    }, true);
     fab.addEventListener("click", open);
     closeBtn.addEventListener("click", close);
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !panel.hidden) close(); });
