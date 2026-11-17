@@ -7,15 +7,15 @@
   <meta property="og:title" content="Crazy E-Book — by Akki & Aadi" />
   <meta property="og:description" content="Original ebooks, coding comics, programming guides, and study notes in Hindi and English." />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="https://coder-with-bca.github.io/crazy-ebook/assets/share-preview-landscape-deep20.jpg" />
+  <meta property="og:image" content="https://crazyebooksofficial.github.io/crazy-ebooks/assets/share-preview-landscape-deep20.jpg" />
   <meta property="og:image:type" content="image/jpeg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Crazy E-Books - original ebooks by Akki and Aadi" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="https://coder-with-bca.github.io/crazy-ebook/assets/share-preview-landscape-deep20.jpg" />
-  <meta property="og:url" content="https://coder-with-bca.github.io/crazy-ebook/" />
-  <link rel="canonical" href="https://coder-with-bca.github.io/crazy-ebook/" />
+  <meta name="twitter:image" content="https://crazyebooksofficial.github.io/crazy-ebooks/assets/share-preview-landscape-deep20.jpg" />
+  <meta property="og:url" content="https://crazyebooksofficial.github.io/crazy-ebooks/" />
+  <link rel="canonical" href="https://crazyebooksofficial.github.io/crazy-ebooks/" />
   <meta name="theme-color" content="#303669" />
   <meta name="application-name" content="Crazy E-Book" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -483,7 +483,7 @@
     "@type": "WebSite",
     "name": "Crazy E-Book",
     "alternateName": "Crazy E-Books",
-    "url": "https://coder-with-bca.github.io/crazy-ebook/",
+    "url": "https://crazyebooksofficial.github.io/crazy-ebooks/",
     "description": "Digital ebooks, notes, and free samples for students and learners by Akki & Aadi."
   }
   </script>
@@ -2878,7 +2878,7 @@
        ========================================================= */
     /* Prefer the WebP twin of any repo-hosted cover; fall back to the JPG on error. */
     function coverUrl(u) {
-      return String(u || "").replace(/(https:\/\/coder-with-bca\.github\.io\/crazy-ebook\/covers\/[^?#]+)\.jpg$/i, "$1.webp");
+      return String(u || "").replace(/(https:\/\/crazyebooksofficial\.github\.io\/crazy-ebooks\/covers\/[^?#]+)\.jpg$/i, "$1.webp");
     }
     document.addEventListener("error", function (e) {
       const t = e.target;
@@ -4639,7 +4639,7 @@
     }
     async function recordWebsiteVisit() {
       try {
-        if (!supabaseReady || !supabase || location.origin !== 'https://coder-with-bca.github.io') return;
+        if (!supabaseReady || !supabase || location.origin !== 'https://crazyebooksofficial.github.io') return;
         await supabase.functions.invoke('record-site-visit', { body: { session_id: getVisitSession(), device: visitDevice() } });
       } catch { /* Analytics must never interrupt browsing or checkout. */ }
     }
