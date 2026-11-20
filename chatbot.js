@@ -395,6 +395,7 @@
   var callAwaiting = false;
   var callSaving = false;
   var lastCallNumber = null;
+  var botSay = null; /* assigned inside init(), where addMsg lives */
 
   function normalizeIndianMobile(raw) {
     var d = String(raw || "").replace(/\D/g, "");
@@ -526,10 +527,10 @@
       }
       row.appendChild(bub); msgs.appendChild(row); scrollDown();
     }
-    function botSay(text) {
+    botSay = function (text) {
       addMsg(text, false);
       afterLookup(function () { relay("bot", text); });
-    }
+    };
     function startCallRequest() {
       callAwaiting = true;
       botSay("Bilkul! \u{1F4DE} Apna 10-digit mobile number yahan type karke bhej do - team ussi number par aapko jald call karegi.\n(Cancel karna ho to 'cancel' likh do.)");
