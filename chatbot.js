@@ -25,8 +25,7 @@
     disclosure: "Ye chat support team ko bheji jaati hai.",
     relayUrl: "https://ikrrdcyoeyzwedebgzbn.supabase.co/functions/v1/send-chat-telegram",
     supportContacts: [
-      { label: "Akki se WhatsApp par baat karein", url: "https://wa.me/918887514125" },
-      { label: "Aadi se WhatsApp par baat karein", url: "https://wa.me/918299144090" }
+      { label: "\u{1F4DE} Call request karein", call: true }
     ]
   };
 
@@ -361,7 +360,7 @@
     if (/(download|access|open ebook|pdf kaise|library|deliver|delivery|kab milegi|kab milega|approve|order status|pending)/.test(q)) return withActs(downloadText());
     if (/(sample|free sample|preview|try)/.test(q))
       return withActs("Har book ke card par 'Free Sample' button hai - usse sample PDF free mein dekh sakte ho, bina kharide.");
-    if (/(support|contact|help|email|telegram|instagram|baat karni|refund|problem|issue|dikkat|complaint)/.test(q))
+    if (/(support|contact|help|email|telegram|instagram|baat karni|call|phone|refund|problem|issue|dikkat|complaint)/.test(q))
       return withActs(supportText(), CONFIG.supportContacts.slice());
     if (/(kitni book|how many books|total books|catalog)/.test(q))
       return withActs("Abhi " + activeBooks().length + " books live hain. Categories: " + categoriesList().join(", ") + ". Kis topic ki book chahiye?");
@@ -385,7 +384,76 @@
       return withActs(head + "\n" + found.map(bookLine).join("\n") + "\n\nDetails dekhni ho to neeche tap karo.", acts);
     }
 
-    return withActs("Hmm, ye mujhe samajh nahi aaya \u{1F605} Main books, prices, offers, payment, download aur support mein help kar sakta hoon. Neeche diye topics se bhi shuru kar sakte ho, ya seedha Aadi ya Akki se baat kar lo.", CONFIG.supportContacts.slice());
+    return withActs("Hmm, ye mujhe samajh nahi aaya \u{1F605} Main books, prices, offers, payment, download aur support mein help kar sakta hoon. Neeche diye topics se bhi shuru kar sakte ho, ya call request kar do - team aapko khud call karegi.", CONFIG.supportContacts.slice());
+  }
+
+  /* ---------- call request flow ----------
+     Third support option: the visitor leaves a 10-digit Indian mobile
+     number; the team calls that number back. The number is stored in
+     the Supabase call_requests table and, like the rest of the chat,
+     relayed to the team's disclosed Telegram channel. */
+  var callAwaiting = false;
+  var callSaving = false;
+  var lastCallNumber = null;
+
+  function normalizeIndianMobile(raw) {
+    var d = String(raw || "").replace(/\D/g, "");
+    if (d.length === 12 && d.indexOf("91") === 0) d = d.slice(2);
+    else if (d.length === 11 && d.charAt(0) === "0") d = d.slice(1);
+    return /^[6-9]\d{9}$/.test(d) ? d : null;
+  }
+
+  function saveCallRequest(digits) {
+    var payload = {
+      phone: "+91 " + digits,
+      session_id: sessionId,
+      page: location.pathname,
+      customer_name: buyerName || null
+    };
+    if (typeof SUPABASE_URL === "undefined" || typeof SUPABASE_ANON_KEY === "undefined") return Promise.resolve(false);
+    return new Promise(function (resolve) {
+      var done = false;
+      function finish(ok) { if (!done) { done = true; resolve(ok); } }
+      var timer = setTimeout(function () { finish(false); }, 8000);
+      try {
+        fetch(SUPABASE_URL + "/rest/v1/call_requests", {
+          method: "POST",
+          headers: {
+            "apikey": SUPABASE_ANON_KEY,
+            "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal"
+          },
+          body: JSON.stringify(payload)
+        }).then(function (res) { clearTimeout(timer); finish(res.ok); })
+          .catch(function () { clearTimeout(timer); finish(false); });
+      } catch (e) { clearTimeout(timer); finish(false); }
+    });
+  }
+
+  function handleCallNumber(t) {
+    if (/^(cancel|band karo|rehne do|rehne\s*do|nahi|nope)$/i.test(t.trim())) {
+      callAwaiting = false;
+      botSay("Theek hai, call request cancel kar di \u{1F60A} Kuch aur poochna ho to main yahin hoon.");
+      return;
+    }
+    var digits = normalizeIndianMobile(t);
+    if (!digits) {
+      botSay("Hmm, ye number sahi nahi lag raha \u{1F605} 10-digit mobile number bhejo, jaise 98765 43210. Cancel karna ho to 'cancel' likh do.");
+      return;
+    }
+    callAwaiting = false;
+    if (digits === lastCallNumber) {
+      botSay("Ye number to already save hai \u2705 Team jald hi +91 " + digits + " par call karegi!");
+      return;
+    }
+    relay("user", "\u{1F4DE} CALL REQUEST: +91 " + digits);
+    callSaving = true;
+    saveCallRequest(digits).then(function () {
+      callSaving = false;
+      lastCallNumber = digits;
+      botSay("Ho gaya! \u2705 Aapka number +91 " + digits + " save ho gaya hai. Team jald hi aapko isi number par call karegi \u{1F64C}");
+    });
   }
 
   /* ---------- UI build ---------- */
@@ -445,6 +513,7 @@
           var btn = el("button", "cecb-act", a.label); btn.type = "button";
           btn.addEventListener("click", function () {
             if (a.url) { window.open(a.url, "_blank", "noopener"); return; }
+            if (a.call) { startCallRequest(); return; }
             try {
               if (typeof openBookDetails === "function") { openBookDetails(String(a.id)); return; }
             } catch (e) {}
@@ -456,6 +525,14 @@
         });
       }
       row.appendChild(bub); msgs.appendChild(row); scrollDown();
+    }
+    function botSay(text) {
+      addMsg(text, false);
+      afterLookup(function () { relay("bot", text); });
+    }
+    function startCallRequest() {
+      callAwaiting = true;
+      botSay("Bilkul! \u{1F4DE} Apna 10-digit mobile number yahan type karke bhej do - team ussi number par aapko jald call karegi.\n(Cancel karna ho to 'cancel' likh do.)");
     }
     function botReply(userText) {
       var row = el("div", "cecb-row");
@@ -484,6 +561,7 @@
       }
       addMsg(t, true);
       input.value = "";
+      if (callAwaiting) { handleCallNumber(t); return; }
       botReply(t);
     }
     inputBar.addEventListener("submit", function (e) { e.preventDefault(); send(input.value); });
