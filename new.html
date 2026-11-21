@@ -1279,6 +1279,63 @@ html[data-theme="dark"] #bookDetailsModal .ce-detail-cover { background:#363d66;
 @media(min-width:640px) { #bookDetailsModal .ce-detail-scroll { padding:24px; } #bookDetailsModal .ce-detail-hero { grid-template-columns:140px minmax(0,1fr); gap:26px; } #bookDetailsModal #bookDetailsTitle { font-size:34px; } #bookDetailsModal .ce-detail-buttons { grid-template-columns:1fr 1fr 1.3fr; } #bookDetailsModal #detailsBuy { grid-column:auto; } }
 @media(max-width:360px) { #bookDetailsModal { padding:7px; } #bookDetailsModal .ce-detail-scroll { padding:14px; } #bookDetailsModal .ce-detail-hero { grid-template-columns:92px minmax(0,1fr); gap:14px; } #bookDetailsModal #bookDetailsTitle { font-size:22px; } #bookDetailsModal .ce-detail-facts { grid-template-columns:repeat(2,minmax(0,1fr)); } #bookDetailsModal .ce-details-actions { padding:10px 14px 14px; } }
 </style>
+<style id="ce-detail-themes">
+/* Theme-aware book details. Layout and actions stay shared; only surfaces change. */
+html:not([data-ui-theme="brutal"]) #bookDetailsModal .ce-detail-panel {
+  --detail-ink:#24263d; --detail-bg:#fffdf8; --detail-soft:#f7f1e6; --detail-muted:#625b6b;
+  --detail-line:rgba(130,108,78,.22); --detail-radius:22px; --detail-card-radius:13px;
+  --detail-shadow:0 20px 60px rgba(36,26,10,.2); --detail-card-shadow:none;
+  --detail-head:linear-gradient(120deg,#fff5d8,#fce9ee); --detail-accent:#ffca28;
+  border:1px solid var(--detail-line); border-radius:var(--detail-radius); box-shadow:var(--detail-shadow);
+}
+html:not([data-ui-theme="brutal"])[data-theme="dark"] #bookDetailsModal .ce-detail-panel {
+  --detail-ink:#fff8ea; --detail-bg:#171f46; --detail-soft:#242d54; --detail-muted:#c4c9df;
+  --detail-line:rgba(208,215,255,.2); --detail-head:linear-gradient(120deg,#252e58,#302644);
+  --detail-shadow:0 20px 60px rgba(0,0,0,.5);
+}
+html:not([data-ui-theme="brutal"]) #bookDetailsModal .ce-detail-top { background:var(--detail-head) !important; color:var(--detail-ink) !important; border-bottom:1px solid var(--detail-line); }
+html:not([data-ui-theme="brutal"]) #bookDetailsModal #closeBookDetails { border:1px solid var(--detail-line); border-radius:50%; background:var(--detail-bg); color:var(--detail-ink); }
+html:not([data-ui-theme="brutal"]) #bookDetailsModal .ce-detail-cover { background:var(--detail-soft); border:1px solid var(--detail-line); border-radius:var(--detail-card-radius); box-shadow:var(--detail-card-shadow); }
+html:not([data-ui-theme="brutal"]) #bookDetailsModal .ce-detail-format,
+html:not([data-ui-theme="brutal"]) #bookDetailsModal .ce-detail-tags span { border:1px solid var(--detail-line); border-radius:999px; background:var(--detail-soft); }
+html:not([data-ui-theme="brutal"]) #bookDetailsModal .ce-detail-fact,
+html:not([data-ui-theme="brutal"]) #bookDetailsModal #detailsRelated button { border:1px solid var(--detail-line); border-radius:var(--detail-card-radius); background:var(--detail-soft); box-shadow:var(--detail-card-shadow); }
+html:not([data-ui-theme="brutal"]) #bookDetailsModal #detailsRelated { border-top:1px solid var(--detail-line); }
+html:not([data-ui-theme="brutal"]) #bookDetailsModal .ce-details-actions { border-top:1px solid var(--detail-line); }
+html:not([data-ui-theme="brutal"]) #bookDetailsModal .ce-detail-buttons > a,
+html:not([data-ui-theme="brutal"]) #bookDetailsModal .ce-detail-buttons > button,
+html:not([data-ui-theme="brutal"]) #bookDetailsModal #detailsEditionSamples .sample-btn,
+html:not([data-ui-theme="brutal"]) #bookDetailsModal .ce-edpick-toggle { border:1px solid var(--detail-line); border-radius:var(--detail-card-radius); background:var(--detail-soft); box-shadow:var(--detail-card-shadow); color:var(--detail-ink); }
+html:not([data-ui-theme="brutal"]) #bookDetailsModal #detailsBuy { background:var(--detail-accent) !important; color:#281900 !important; box-shadow:0 5px 14px rgba(200,128,0,.16); }
+html:not([data-ui-theme="brutal"]) #bookDetailsModal #bookDetailsTitle { font-weight:800; letter-spacing:-.025em; }
+html:not([data-ui-theme="brutal"]) #bookDetailsModal :is(button,a):focus-visible { outline:3px solid #c77a00; outline-offset:3px; }
+/* Glossy: layered glass and a fine highlight. */
+html[data-ui-theme="default"] #bookDetailsModal .ce-detail-panel { --detail-bg:rgba(255,253,248,.96); --detail-shadow:0 24px 64px rgba(55,35,9,.24),inset 0 1px 0 #fff; --detail-card-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 4px 12px rgba(100,70,20,.06); backdrop-filter:blur(20px) saturate(1.4); }
+html[data-ui-theme="default"][data-theme="dark"] #bookDetailsModal .ce-detail-panel { --detail-bg:rgba(23,31,70,.96); --detail-shadow:0 24px 64px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.2); --detail-card-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 4px 12px rgba(0,0,0,.1); }
+/* Matte: quiet, flat surfaces without glass highlights. */
+html[data-ui-theme="matte"] #bookDetailsModal .ce-detail-panel { --detail-radius:16px; --detail-card-radius:9px; --detail-shadow:0 12px 36px rgba(45,33,20,.16); --detail-head:#f4eee3; }
+html[data-ui-theme="matte"][data-theme="dark"] #bookDetailsModal .ce-detail-panel { --detail-head:#1d264b; --detail-shadow:0 12px 36px rgba(0,0,0,.4); }
+/* Neumorphism: matched warm/navy surfaces and soft raised cards. */
+html[data-ui-theme="neu"] #bookDetailsModal .ce-detail-panel { --detail-bg:#f2e9d4; --detail-soft:#f2e9d4; --detail-head:#f2e9d4; --detail-line:rgba(141,112,56,.18); --detail-radius:26px; --detail-card-radius:16px; --detail-shadow:12px 12px 32px rgba(95,71,22,.28),-8px -8px 24px rgba(255,255,255,.3); --detail-card-shadow:5px 5px 11px rgba(166,132,60,.2),-4px -4px 10px rgba(255,255,255,.85); }
+html[data-ui-theme="neu"][data-theme="dark"] #bookDetailsModal .ce-detail-panel { --detail-bg:#11183a; --detail-soft:#11183a; --detail-head:#11183a; --detail-line:rgba(165,177,236,.18); --detail-shadow:12px 12px 32px rgba(0,0,0,.5),-8px -8px 24px rgba(96,110,175,.12); --detail-card-shadow:5px 5px 12px rgba(3,6,20,.6),-4px -4px 11px rgba(96,110,175,.17); }
+html[data-ui-theme="neu"] #bookDetailsModal .ce-detail-facts { gap:12px; }
+/* Clay: pill controls, inflated corners and inset edge shading. */
+html[data-ui-theme="clay"] #bookDetailsModal .ce-detail-panel { --detail-bg:#fffdf6; --detail-soft:#fff8e8; --detail-head:#fff2da; --detail-radius:32px; --detail-card-radius:20px; --detail-shadow:0 20px 45px rgba(140,90,20,.25),inset 0 2px 3px #fff,inset 0 -8px 14px rgba(190,130,30,.12); --detail-card-shadow:0 5px 10px rgba(170,110,20,.09),inset 0 2px 2px #fff,inset 0 -4px 7px rgba(190,130,30,.1); }
+html[data-ui-theme="clay"][data-theme="dark"] #bookDetailsModal .ce-detail-panel { --detail-bg:#1d2652; --detail-soft:#273161; --detail-head:#293260; --detail-shadow:0 20px 45px rgba(0,0,0,.5),inset 0 2px 3px rgba(255,255,255,.2),inset 0 -8px 14px rgba(0,0,0,.25); --detail-card-shadow:0 5px 10px rgba(0,0,0,.18),inset 0 2px 2px rgba(255,255,255,.15),inset 0 -4px 7px rgba(0,0,0,.2); }
+html[data-ui-theme="clay"] #bookDetailsModal .ce-detail-buttons > :is(a,button) { border-radius:999px; }
+/* Aurora: softly tinted cards and the site's sunset gradient. */
+html[data-ui-theme="aurora"] #bookDetailsModal .ce-detail-panel { --detail-bg:#fff7f4; --detail-soft:linear-gradient(130deg,#fce9f3,#edf0ff); --detail-head:linear-gradient(115deg,#ffe6cb,#f9d9ed 55%,#e2e4ff); --detail-accent:linear-gradient(135deg,#ad4b00,#b92e69 55%,#6541d4); --detail-shadow:0 20px 60px rgba(114,54,139,.25); }
+html[data-ui-theme="aurora"][data-theme="dark"] #bookDetailsModal .ce-detail-panel { --detail-bg:#191b3e; --detail-soft:linear-gradient(130deg,#31244f,#222b52); --detail-head:linear-gradient(115deg,#453042,#39284f 55%,#292657); --detail-shadow:0 20px 60px rgba(0,0,0,.5); }
+html[data-ui-theme="aurora"] #bookDetailsModal #detailsBuy { color:#fff !important; text-shadow:none; }
+/* Bento: nested, softly colored information tiles. */
+html[data-ui-theme="bento"] #bookDetailsModal .ce-detail-panel { --detail-bg:#efe4cc; --detail-soft:#fff9e8; --detail-head:#fff4da; --detail-radius:24px; --detail-card-radius:16px; --detail-line:transparent; --detail-shadow:0 16px 40px rgba(140,95,20,.22); }
+html[data-ui-theme="bento"][data-theme="dark"] #bookDetailsModal .ce-detail-panel { --detail-bg:#0c1230; --detail-soft:#1b2450; --detail-head:#1b2450; --detail-shadow:0 16px 40px rgba(0,0,0,.5); }
+html[data-ui-theme="bento"] #bookDetailsModal .ce-detail-fact:nth-child(2n) { background:#fdeedc; }
+html[data-ui-theme="bento"][data-theme="dark"] #bookDetailsModal .ce-detail-fact:nth-child(2n) { background:#241d4e; }
+html[data-ui-theme="bento"] #bookDetailsModal .ce-detail-fact:nth-child(3n) { background:#fff4da; }
+html[data-ui-theme="bento"][data-theme="dark"] #bookDetailsModal .ce-detail-fact:nth-child(3n) { background:#15224f; }
+
+</style>
 </head>
 
 <body class="bg-slate-50 text-slate-900 antialiased">
