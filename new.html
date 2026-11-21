@@ -1226,6 +1226,59 @@
     }
   </style>
 
+<style id="ce-detail-redesign">
+/* Book details: full-width mobile content, contained scroll and persistent actions. */
+#bookDetailsModal:not(.hidden) { padding:12px; align-items:center; justify-content:center; }
+#bookDetailsModal .ce-detail-panel { --detail-ink:#101b2d; --detail-bg:#fffdf8; --detail-soft:#f4f1e8; --detail-muted:#526070; color:var(--detail-ink); background:var(--detail-bg); width:100%; max-width:720px; height:auto; padding:0; min-height:0; max-height:92dvh; display:flex; flex-direction:column; overflow:hidden; border:3px solid var(--detail-ink); border-radius:8px; box-shadow:7px 7px 0 #ffb300; }
+#bookDetailsModal .ce-detail-top { display:flex; justify-content:space-between; align-items:center; padding:10px 18px; border-bottom:2px solid var(--detail-ink); background:#ffdf6a !important; color:#101b2d !important; flex-shrink:0; font-size:10px; font-weight:900; letter-spacing:.15em; }
+#bookDetailsModal #closeBookDetails { display:grid; place-items:center; width:34px; height:34px; border:2px solid #101b2d; background:#fffdf8; color:#101b2d; border-radius:4px; font-size:25px; font-weight:600; line-height:1; }
+#bookDetailsModal .ce-detail-scroll { padding:20px; overflow-y:auto; overscroll-behavior:contain; min-height:0; }
+#bookDetailsModal .ce-detail-hero { display:grid; grid-template-columns:116px minmax(0,1fr); align-items:center; gap:20px; }
+#bookDetailsModal .ce-detail-cover { padding:8px; background:#e6e8ff; border:2px solid var(--detail-ink); border-radius:5px; box-shadow:4px 4px 0 var(--detail-ink); }
+#bookDetailsModal #detailsCover { display:block; width:100%; aspect-ratio:2/3; object-fit:contain; border-radius:2px; }
+#bookDetailsModal #detailsCategory { font-size:10px; font-weight:900; letter-spacing:.08em; text-transform:uppercase; color:var(--detail-muted); line-height:1.5; }
+#bookDetailsModal #bookDetailsTitle { font-size:26px; font-weight:900; line-height:1.12; letter-spacing:-.035em; margin-top:6px; overflow-wrap:anywhere; }
+#bookDetailsModal #detailsPrice { font-size:25px; font-weight:900; margin-top:12px; }
+#bookDetailsModal #detailsPrice del { color:var(--detail-muted); font-size:15px; }
+#bookDetailsModal .ce-detail-format { display:inline-block; font-size:9px; font-weight:900; letter-spacing:.08em; padding:4px 7px; margin-top:8px; border:1.5px solid var(--detail-ink); background:var(--detail-soft); }
+#bookDetailsModal #detailsDescription { font-size:14px; line-height:1.65; margin:20px 0 18px; color:var(--detail-muted); white-space:pre-line; }
+#bookDetailsModal #detailsMetadata { display:grid; gap:16px; }
+#bookDetailsModal .ce-detail-label, #bookDetailsModal #detailsRelated > p { margin:0 0 8px; font-size:10px; font-weight:900; letter-spacing:.1em; text-transform:uppercase; color:var(--detail-muted); }
+#bookDetailsModal .ce-detail-facts { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; }
+#bookDetailsModal .ce-detail-fact { padding:10px; border:1.5px solid var(--detail-ink); border-radius:4px; background:var(--detail-soft); min-width:0; }
+#bookDetailsModal .ce-detail-fact dt { font-size:9px; font-weight:800; color:var(--detail-muted); text-transform:uppercase; letter-spacing:.05em; }
+#bookDetailsModal .ce-detail-fact dd { margin-top:4px; font-size:12px; line-height:1.45; font-weight:700; overflow-wrap:anywhere; }
+#bookDetailsModal .ce-detail-fact-wide { grid-column:1/-1; display:flex; gap:10px; align-items:baseline; padding:9px 10px; }
+#bookDetailsModal .ce-detail-fact-wide dd { margin:0; flex:1; }
+#bookDetailsModal .ce-detail-tags { display:flex; flex-wrap:wrap; gap:6px; }
+#bookDetailsModal .ce-detail-tags span { padding:4px 8px; border:1px solid var(--detail-ink); border-radius:3px; background:transparent; color:var(--detail-ink); font-size:11px; font-weight:600; }
+#bookDetailsModal #detailsRelated { margin-top:20px; padding-top:16px; border-top:1.5px solid var(--detail-ink); }
+#bookDetailsModal #detailsRelated > div { gap:8px; }
+#bookDetailsModal #detailsRelated button { min-width:0; padding:9px; border:1.5px solid var(--detail-ink); border-radius:4px; background:var(--detail-bg); color:var(--detail-ink); }
+#bookDetailsModal #detailsRelated img { width:34px; height:50px; object-fit:contain; border-radius:2px; }
+#bookDetailsModal #detailsRelated .line-clamp-2 { font-size:11px; line-height:1.35; }
+#bookDetailsModal .ce-details-actions { position:relative; bottom:auto; margin:0; padding:12px 20px 16px; border-top:2px solid var(--detail-ink); background:var(--detail-bg) !important; flex-shrink:0; }
+#bookDetailsModal .ce-detail-total { display:flex; justify-content:space-between; align-items:center; margin-bottom:9px; }
+#bookDetailsModal .ce-detail-total > span:first-child { font-size:9px; letter-spacing:.1em; font-weight:800; color:var(--detail-muted); }
+#bookDetailsModal #detailsBarPrice { font-size:20px; font-weight:900; }
+#bookDetailsModal #detailsBarPrice del { font-size:12px; }
+#bookDetailsModal .ce-detail-buttons { display:grid; grid-template-columns:1fr 1.25fr; gap:8px; }
+#bookDetailsModal .ce-detail-buttons > a, #bookDetailsModal .ce-detail-buttons > button { min-height:44px; display:grid; place-items:center; padding:10px 8px; border:2px solid var(--detail-ink); border-radius:4px; font-size:12px; font-weight:800; color:var(--detail-ink); }
+#bookDetailsModal #detailsBuy { background:#ffca28; color:#101b2d; grid-column:1/-1; box-shadow:3px 3px 0 var(--detail-ink); font-size:14px; }
+#bookDetailsModal #detailsEditionSamples:empty { display:none; }
+#bookDetailsModal #detailsEditionSamples:not(:empty) { grid-column:auto; min-width:0; }
+#bookDetailsModal #detailsEditionSamples > div { display:flex; gap:4px; }
+#bookDetailsModal #detailsEditionSamples .sample-btn { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:44px; padding:5px; flex:1; border:2px solid var(--detail-ink); color:var(--detail-ink); border-radius:4px; font-size:10px; line-height:1.25; }
+#bookDetailsModal #detailsEditionPicker:not(:empty) { margin-top:18px; }
+#bookDetailsModal .ce-edpick-toggle { border:1.5px solid var(--detail-ink); border-radius:4px; background:var(--detail-bg); color:var(--detail-ink); }
+#bookDetailsModal #detailsBuy { color:#101b2d !important; }
+#bookDetailsModal #detailsMetadata { font-size:12px; }
+#bookDetailsModal .hidden { display:none !important; }
+html[data-theme="dark"] #bookDetailsModal .ce-detail-panel { --detail-ink:#fff8ea; --detail-bg:#171f46; --detail-soft:#252e58; --detail-muted:#c4c9df; }
+html[data-theme="dark"] #bookDetailsModal .ce-detail-cover { background:#363d66; }
+@media(min-width:640px) { #bookDetailsModal .ce-detail-scroll { padding:24px; } #bookDetailsModal .ce-detail-hero { grid-template-columns:140px minmax(0,1fr); gap:26px; } #bookDetailsModal #bookDetailsTitle { font-size:34px; } #bookDetailsModal .ce-detail-buttons { grid-template-columns:1fr 1fr 1.3fr; } #bookDetailsModal #detailsBuy { grid-column:auto; } }
+@media(max-width:360px) { #bookDetailsModal { padding:7px; } #bookDetailsModal .ce-detail-scroll { padding:14px; } #bookDetailsModal .ce-detail-hero { grid-template-columns:92px minmax(0,1fr); gap:14px; } #bookDetailsModal #bookDetailsTitle { font-size:22px; } #bookDetailsModal .ce-detail-facts { grid-template-columns:repeat(2,minmax(0,1fr)); } #bookDetailsModal .ce-details-actions { padding:10px 14px 14px; } }
+</style>
 </head>
 
 <body class="bg-slate-50 text-slate-900 antialiased">
@@ -2069,11 +2122,21 @@
        BUY MODAL
        ========================================================= -->
   <div id="bookDetailsModal" class="fixed inset-0 z-50 hidden items-end justify-center bg-slate-950/60 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="bookDetailsTitle">
-    <div class="max-h-[88vh] w-full max-w-xl overflow-y-auto rounded-3xl bg-white p-3 shadow-2xl sm:max-h-[92vh] sm:p-7">
-      <div class="flex items-center px-1 pt-1"><div class="ce-traffic"><button id="closeBookDetails" type="button" class="ce-tl ce-tl-r" aria-label="Close"></button></div></div>
-        <div class="grid grid-cols-[88px_minmax(0,1fr)] items-start gap-3 sm:grid-cols-[minmax(120px,0.7fr)_1.3fr] sm:gap-4">
-        <img id="detailsCover" class="aspect-[2/3] w-full rounded-xl object-cover" alt="Book cover">
-        <div><p id="detailsCategory" class="text-xs font-bold uppercase tracking-widest text-indigo-600"></p><h2 id="bookDetailsTitle" class="mt-1 text-2xl font-black"></h2><p id="detailsRating" class="mt-2 text-sm text-amber-600"></p><p id="detailsPrice" class="mt-2 text-xl font-black"></p><p id="detailsDescription" class="mt-3 whitespace-pre-line text-sm leading-6 text-slate-600"></p><div id="detailsMetadata" class="mt-4 space-y-3"></div><div id="detailsRelated" class="mt-5"></div><div class="ce-details-actions mt-5 grid grid-cols-2 gap-2"><div class="col-span-2 flex items-center justify-between rounded-xl px-1"><span class="text-[10px] font-bold uppercase tracking-widest opacity-60">Price</span><span id="detailsBarPrice" class="text-lg font-black"></span></div><a id="detailsSample" href="#" target="_blank" rel="noopener noreferrer" class="hidden rounded-xl border px-3 py-3 text-center text-sm font-bold">Sample</a><button id="detailsCart" class="rounded-xl border px-3 py-3 text-sm font-bold">+ Add to Cart</button><button id="detailsBuy" class="col-span-2 rounded-xl bg-amber-400 px-3 py-3 text-sm font-bold text-slate-950">Buy Now</button></div></div>
+    <div class="ce-detail-panel">
+      <header class="ce-detail-top"><span>BOOK DETAILS</span><button id="closeBookDetails" type="button" aria-label="Close book details">×</button></header>
+      <div class="ce-detail-scroll">
+        <div class="ce-detail-hero">
+          <div class="ce-detail-cover"><img id="detailsCover" alt="Book cover"></div>
+          <div class="ce-detail-heading"><p id="detailsCategory"></p><h2 id="bookDetailsTitle"></h2><p id="detailsRating" class="hidden"></p><p id="detailsPrice"></p><span class="ce-detail-format">PDF EBOOK</span></div>
+        </div>
+        <div id="detailsEditionPicker"></div>
+        <p id="detailsDescription"></p>
+        <div id="detailsMetadata"></div>
+        <div id="detailsRelated"></div>
+      </div>
+      <div class="ce-details-actions">
+        <div class="ce-detail-total"><span>YOUR PRICE</span><span id="detailsBarPrice"></span></div>
+        <div class="ce-detail-buttons"><div id="detailsEditionSamples"></div><a id="detailsSample" href="#" target="_blank" rel="noopener noreferrer" class="hidden">Sample ↗</a><button id="detailsCart" type="button">+ Add to Cart</button><button id="detailsBuy" type="button" class="bg-amber-400 text-slate-950">Buy Now →</button></div>
       </div>
     </div>
   </div>
@@ -4088,12 +4151,10 @@
         if (pdfFacts.a) bookFacts.push(`For: ${pdfFacts.a}`);
       }
       if (editionSiblings(book).length) bookFacts.push("Reading language: Hindi + English");
-      metadata.innerHTML = [
-        `<div><p class="mb-1 text-[10px] font-black uppercase tracking-widest text-slate-400">Good to know</p><div class="flex flex-wrap gap-1.5">${renderMetadataChips(bookFacts)}</div></div>`,
-        language ? `<div><p class="mb-1 text-[10px] font-black uppercase tracking-widest text-slate-400">Programming language</p><div class="flex flex-wrap gap-1.5">${renderMetadataChips([language])}</div></div>` : "",
-        subjects.length ? `<div><p class="mb-1 text-[10px] font-black uppercase tracking-widest text-slate-400">Topics & subjects</p><div class="flex flex-wrap gap-1.5">${renderMetadataChips(subjects)}</div></div>` : "",
-        tags.length ? `<div><p class="mb-1 text-[10px] font-black uppercase tracking-widest text-slate-400">Tags</p><div class="flex flex-wrap gap-1.5">${renderMetadataChips(tags)}</div></div>` : ""
-      ].filter(Boolean).join("");
+      const factRows = bookFacts.slice().sort((a,b) => Number(/^(Access|Inside|Reading language):/.test(a)) - Number(/^(Access|Inside|Reading language):/.test(b))).map(fact => { const split = fact.indexOf(":"); return {label:fact.slice(0,split), value:fact.startsWith("Format:") ? "PDF ebook" : fact.slice(split+1).trim()}; });
+      metadata.innerHTML = `<section><h3 class="ce-detail-label">About this ebook</h3><dl class="ce-detail-facts">${factRows.map(fact => `<div class="ce-detail-fact ${/^(Access|Inside|Reading language)$/.test(fact.label) ? 'ce-detail-fact-wide' : ''}"><dt>${escapeHtml(fact.label)}</dt><dd>${escapeHtml(fact.value)}</dd></div>`).join("")}</dl></section>` +
+        ((subjects.length || language || tags.length) ? `<section><h3 class="ce-detail-label">Topics & tags</h3><div class="ce-detail-tags">${[...new Set([...subjects, language, ...tags].filter(Boolean))].map(value => `<span>${escapeHtml(value)}</span>`).join("")}</div></section>` : "");
+      document.querySelector("#bookDetailsModal .ce-detail-scroll").scrollTop = 0;
       renderRelatedBooks(book);
       document.getElementById("detailsCart").classList.toggle("hidden", !!book.free || Number(book.price) === 0);
       syncCartFeedback();
