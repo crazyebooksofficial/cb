@@ -443,16 +443,25 @@
       botSay("Hmm, ye number sahi nahi lag raha \u{1F605} 10-digit mobile number bhejo, jaise 98765 43210. Cancel karna ho to 'cancel' likh do.");
       return;
     }
+    if (callSaving) {
+      botSay("Request save ho rahi hai. Kripya thoda rukiye.");
+      return;
+    }
     callAwaiting = false;
     if (digits === lastCallNumber) {
       botSay("Ye number to already save hai \u2705 Team jald hi +91 " + digits + " par call karegi!");
       return;
     }
-    relay("user", "\u{1F4DE} CALL REQUEST: +91 " + digits);
     callSaving = true;
-    saveCallRequest(digits).then(function () {
+    saveCallRequest(digits).then(function (saved) {
       callSaving = false;
+      if (!saved) {
+        callAwaiting = true;
+        botSay("Request save nahi ho paayi. Kripya thodi der baad number dobara bhejein, ya Instagram DM se sampark karein.");
+        return;
+      }
       lastCallNumber = digits;
+      relay("user", "\u{1F4DE} CALL REQUEST: +91 " + digits);
       botSay("Ho gaya! \u2705 Aapka number +91 " + digits + " save ho gaya hai. Team jald hi aapko isi number par call karegi \u{1F64C}");
     });
   }
@@ -531,6 +540,15 @@
       addMsg(text, false);
       afterLookup(function () { relay("bot", text); });
     };
+    var requestCallButton = document.getElementById("ceRequestCall");
+    if (requestCallButton) requestCallButton.addEventListener("click", function () {
+      open();
+      if (!relayStarted) {
+        relayStarted = true;
+        afterLookup(function () { relay("start", ""); startFlushed = true; });
+      }
+      startCallRequest();
+    });
     function startCallRequest() {
       callAwaiting = true;
       botSay("Bilkul! \u{1F4DE} Apna 10-digit mobile number yahan type karke bhej do - team ussi number par aapko jald call karegi.\n(Cancel karna ho to 'cancel' likh do.)");
