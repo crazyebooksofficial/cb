@@ -605,12 +605,12 @@
     section[id] { scroll-margin-bottom: 96px; }
     body { overflow-anchor: none; /* v67: window swaps change page height; never re-anchor scroll mid-switch */ }
     #heroSection .hero-scene { height: clamp(230px, 34vw, 320px); border-radius: 1.5rem; }
-    .ce-bottom-nav { position: fixed; z-index: 45; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-around; gap: 2px; padding: 8px 10px calc(8px + env(safe-area-inset-bottom)); background: rgba(255,255,255,.94); border-top: 1px solid rgba(255,255,255,.4); box-shadow: 0 -8px 30px rgba(15,23,42,.10), inset 0 1px 0 rgba(255,255,255,.5); transform: translateZ(0); /* v67: no backdrop-filter + own compositor layer - backdrop blur on a fixed bar made Android Chrome delay its repaint during window switches, visibly dragging the nav */ }
+    .ce-bottom-nav { position: fixed; z-index: 45; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-around; gap: 2px; padding: 10px 10px calc(10px + env(safe-area-inset-bottom)); overflow: hidden; /* v113: taller bar; clip the active-tab glow to the bar (and its rounded pill corners on desktop) so it never pokes outside */ background: rgba(255,255,255,.94); border-top: 1px solid rgba(255,255,255,.4); box-shadow: 0 -8px 30px rgba(15,23,42,.10), inset 0 1px 0 rgba(255,255,255,.5); transform: translateZ(0); /* v67: no backdrop-filter + own compositor layer - backdrop blur on a fixed bar made Android Chrome delay its repaint during window switches, visibly dragging the nav */ }
     html[data-theme="dark"] .ce-bottom-nav { background: rgba(17,24,56,.94); /* v67: solid since backdrop blur removed */ border-top-color: rgba(255,255,255,.10); box-shadow: 0 -8px 30px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.07); }
     .ce-bn-item { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 56px; padding: 4px 6px; border-radius: .9rem; font-size: 10px; font-weight: 800; color: inherit; background: none; border: 0; cursor: pointer; margin: 0 !important; }
     .ce-bn-item > span:first-child { font-size: 18px; line-height: 1.2; }
     .ce-bn-item:active { transform: scale(.94); }
-    @media (min-width: 1024px) { .ce-bottom-nav { left: 50%; right: auto; bottom: 14px; transform: translateX(-50%) translateZ(0); border: 1px solid rgba(255,255,255,.4); border-radius: 9999px; padding: 8px 14px; } html[data-theme="dark"] .ce-bottom-nav { border-color: rgba(255,255,255,.12); } }
+    @media (min-width: 1024px) { .ce-bottom-nav { left: 50%; right: auto; bottom: 14px; transform: translateX(-50%) translateZ(0); border: 1px solid rgba(255,255,255,.4); border-radius: 9999px; padding: 10px 16px; } html[data-theme="dark"] .ce-bottom-nav { border-color: rgba(255,255,255,.12); } }
     .ce-bottom-nav { padding-left: 4px; padding-right: 4px; gap: 0; }
     /* v68 (Akki): 7 nav tabs must be 7 EQUAL columns so Offers (4th) sits at the
        exact horizontal center, 3 tabs each side. Force flex-basis 0 + width 0 +
@@ -1452,7 +1452,7 @@ html[data-ui-theme="bento"][data-theme="dark"] #bookDetailsModal .ce-detail-fact
 
     /* --- Mobile finishing: bottom nav never eats content, safe areas --- */
     html[data-ui-theme="brutal"] .ce-win { padding-bottom:calc(120px + env(safe-area-inset-bottom, 0px)); }
-    html[data-ui-theme="brutal"] .ce-bottom-nav { padding-bottom:calc(8px + env(safe-area-inset-bottom, 0px)); }
+    html[data-ui-theme="brutal"] .ce-bottom-nav { padding-bottom:calc(10px + env(safe-area-inset-bottom, 0px)); }
 
     /* --- Reduced motion: everything new off --- */
     @media (prefers-reduced-motion:reduce) {
@@ -3121,7 +3121,7 @@ html[data-ui-theme="bento"][data-theme="dark"] #bookDetailsModal .ce-detail-fact
                 : `<div class="${escapeHtml(book.coverClass || 'bg-slate-950 text-white')} flex h-full flex-col justify-between p-5"><div class="text-[10px] font-black uppercase tracking-[0.25em] opacity-70">${escapeHtml(book.category)}</div><div><div class="text-3xl font-black tracking-tight">${escapeHtml(book.coverLabel || 'BOOK')}</div><div class="mt-2 max-w-[150px] text-xs font-semibold opacity-75">${escapeHtml(editionSiblings(book).length && book.editionTitle ? book.editionTitle : book.title)}</div></div></div>`}
             </div>
             ${publicBookTag(book) ? `<span class="absolute -right-1 top-0 rounded-full bg-white px-2.5 py-1 text-[10px] font-black text-slate-700 shadow-md ring-1 ring-slate-200">${escapeHtml(publicBookTag(book))}</span>` : ''}
-            <div class="book-detail-reveal"><button type="button" data-details-button="${escapeHtml(book.id)}">View details <span aria-hidden="true">↗</span></button></div>
+            <div class="book-detail-reveal"><button type="button" data-details-button="${escapeHtml(book.id)}">View details</button></div>
           </div>
           <div class="book-card-content mt-4 flex flex-1 flex-col">
             <p class="book-category mb-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">${escapeHtml(book.category || 'Digital Book')}</p>
