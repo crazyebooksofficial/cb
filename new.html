@@ -605,12 +605,12 @@
     section[id] { scroll-margin-bottom: 96px; }
     body { overflow-anchor: none; /* v67: window swaps change page height; never re-anchor scroll mid-switch */ }
     #heroSection .hero-scene { height: clamp(230px, 34vw, 320px); border-radius: 1.5rem; }
-    .ce-bottom-nav { position: fixed; z-index: 45; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-around; gap: 2px; padding: 20px 10px calc(20px + env(safe-area-inset-bottom)); overflow: hidden; /* v114: add clear vertical breathing room around the contained active-tab glow */ background: rgba(255,255,255,.94); border-top: 1px solid rgba(255,255,255,.4); box-shadow: 0 -8px 30px rgba(15,23,42,.10), inset 0 1px 0 rgba(255,255,255,.5); transform: translateZ(0); /* v67: no backdrop-filter + own compositor layer - backdrop blur on a fixed bar made Android Chrome delay its repaint during window switches, visibly dragging the nav */ }
+    .ce-bottom-nav { position: fixed; z-index: 45; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-around; gap: 2px; padding: 10px 10px calc(10px + env(safe-area-inset-bottom)); overflow: hidden; /* v115: restore original nav height; widen desktop pill for corner clearance */ background: rgba(255,255,255,.94); border-top: 1px solid rgba(255,255,255,.4); box-shadow: 0 -8px 30px rgba(15,23,42,.10), inset 0 1px 0 rgba(255,255,255,.5); transform: translateZ(0); /* v67: no backdrop-filter + own compositor layer - backdrop blur on a fixed bar made Android Chrome delay its repaint during window switches, visibly dragging the nav */ }
     html[data-theme="dark"] .ce-bottom-nav { background: rgba(17,24,56,.94); /* v67: solid since backdrop blur removed */ border-top-color: rgba(255,255,255,.10); box-shadow: 0 -8px 30px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.07); }
     .ce-bn-item { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 56px; padding: 4px 6px; border-radius: .9rem; font-size: 10px; font-weight: 800; color: inherit; background: none; border: 0; cursor: pointer; margin: 0 !important; }
     .ce-bn-item > span:first-child { font-size: 18px; line-height: 1.2; }
     .ce-bn-item:active { transform: scale(.94); }
-    @media (min-width: 1024px) { .ce-bottom-nav { left: 50%; right: auto; bottom: 14px; transform: translateX(-50%) translateZ(0); border: 1px solid rgba(255,255,255,.4); border-radius: 9999px; padding: 20px 16px; } html[data-theme="dark"] .ce-bottom-nav { border-color: rgba(255,255,255,.12); } }
+    @media (min-width: 1024px) { .ce-bottom-nav { left: 50%; right: auto; bottom: 14px; transform: translateX(-50%) translateZ(0); border: 1px solid rgba(255,255,255,.4); border-radius: 9999px; padding: 10px 16px; } html[data-theme="dark"] .ce-bottom-nav { border-color: rgba(255,255,255,.12); } }
     .ce-bottom-nav { padding-left: 4px; padding-right: 4px; gap: 0; }
     /* v68 (Akki): 7 nav tabs must be 7 EQUAL columns so Offers (4th) sits at the
        exact horizontal center, 3 tabs each side. Force flex-basis 0 + width 0 +
@@ -967,7 +967,7 @@
        One shared indicator moves to the active item; no layout shift, transform-only animation. */
     .ce-bn-ico { display: inline-flex; }
     .ce-bn-ico svg { width: 20px; height: 20px; }
-    .ce-bn-glow { position: absolute; z-index: 0; top: 14px; bottom: calc(14px + env(safe-area-inset-bottom)); left: 0; width: 56px; border-radius: .9rem; background: var(--ce-teal-soft); box-shadow: 0 0 14px rgba(20,216,196,.40), inset 0 0 0 1px rgba(20,216,196,.32); opacity: 0; transform: translateX(0); transition: transform .45s cubic-bezier(.3,1.35,.4,1), width .45s cubic-bezier(.3,1.35,.4,1), opacity .25s ease; pointer-events: none; }
+    .ce-bn-glow { position: absolute; z-index: 0; top: 6px; bottom: calc(6px + env(safe-area-inset-bottom)); left: 0; width: 56px; border-radius: .9rem; background: var(--ce-teal-soft); box-shadow: 0 0 14px rgba(20,216,196,.40), inset 0 0 0 1px rgba(20,216,196,.32); opacity: 0; transform: translateX(0); transition: transform .45s cubic-bezier(.3,1.35,.4,1), width .45s cubic-bezier(.3,1.35,.4,1), opacity .25s ease; pointer-events: none; }
     .ce-bn-glow.is-on { opacity: 1; }
     .ce-bn-glow::after { content: ""; position: absolute; left: 22%; right: 22%; bottom: 2px; height: 3px; border-radius: 3px; background: var(--ce-teal-grad); box-shadow: 0 0 8px rgba(20,216,196,.85); }
     .ce-bottom-nav > .ce-bn-item { position: relative; z-index: 1; }
@@ -1336,6 +1336,10 @@ html[data-ui-theme="bento"] #bookDetailsModal .ce-detail-fact:nth-child(3n) { ba
 html[data-ui-theme="bento"][data-theme="dark"] #bookDetailsModal .ce-detail-fact:nth-child(3n) { background:#15224f; }
 
 </style>
+<style id="ce-v115">
+/* v115: restore original nav height and extend the desktop pill horizontally for corner clearance */
+@media (min-width: 1024px) { .ce-bottom-nav { padding-left: 28px !important; padding-right: 28px !important; } }
+</style>
 </head>
 
 <body class="bg-slate-50 text-slate-900 antialiased">
@@ -1452,7 +1456,7 @@ html[data-ui-theme="bento"][data-theme="dark"] #bookDetailsModal .ce-detail-fact
 
     /* --- Mobile finishing: bottom nav never eats content, safe areas --- */
     html[data-ui-theme="brutal"] .ce-win { padding-bottom:calc(120px + env(safe-area-inset-bottom, 0px)); }
-    html[data-ui-theme="brutal"] .ce-bottom-nav { padding-bottom:calc(20px + env(safe-area-inset-bottom, 0px)); }
+    html[data-ui-theme="brutal"] .ce-bottom-nav { padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); }
 
     /* --- Reduced motion: everything new off --- */
     @media (prefers-reduced-motion:reduce) {
