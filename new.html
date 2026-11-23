@@ -1611,6 +1611,31 @@ html[data-ui-theme="bento"][data-theme="dark"] #bookDetailsModal .ce-detail-fact
     @keyframes ceEdIn { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:none; } }
     @media (prefers-reduced-motion: reduce) { .ce-edpick-list { animation:none; } .ce-edpick-chevron { transition:none; } }
   </style>
+  <style id="ce-v116">
+    /* v116: on phones the book details window opens as a bottom sheet;
+       swiping up on it grows it to FULL SCREEN like Swiggy Instamart, swiping back down shrinks it. */
+    #bookDetailsModal .ce-sheet-grab { display:none; }
+    @media (max-width:639.5px) {
+      #bookDetailsModal:not(.hidden) { padding:0; align-items:flex-end; justify-content:center; }
+      #bookDetailsModal .ce-detail-panel {
+        position:relative; max-height:86dvh;
+        border-bottom-left-radius:0; border-bottom-right-radius:0;
+        transition:max-height .34s cubic-bezier(.2,.9,.25,1), border-radius .34s cubic-bezier(.2,.9,.25,1);
+      }
+      #bookDetailsModal.ce-sheet-full .ce-detail-panel {
+        height:100dvh; max-height:100dvh; border-radius:0;
+      }
+      #bookDetailsModal .ce-sheet-grab {
+        display:block; position:absolute; top:5px; left:50%; transform:translateX(-50%);
+        width:44px; height:5px; border-radius:999px; background:var(--detail-ink,#101b2d); opacity:.32;
+        z-index:5; pointer-events:none;
+      }
+      #bookDetailsModal.ce-sheet-full .ce-sheet-grab { opacity:.22; }
+    }
+    @media (max-width:639.5px) and (prefers-reduced-motion: reduce) {
+      #bookDetailsModal .ce-detail-panel { transition:none; }
+    }
+  </style>
   <header class="ce-glass-bar ce-banner" id="ceBanner">
     <div class="ce-banner-inner mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <a href="#home" id="siteLogoLink" class="ce-banner-logo" aria-label="Crazy E-Book home">
@@ -2184,6 +2209,7 @@ html[data-ui-theme="bento"][data-theme="dark"] #bookDetailsModal .ce-detail-fact
        ========================================================= -->
   <div id="bookDetailsModal" class="fixed inset-0 z-50 hidden items-end justify-center bg-slate-950/60 p-2 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="bookDetailsTitle">
     <div class="ce-detail-panel">
+      <span class="ce-sheet-grab" aria-hidden="true"></span>
       <header class="ce-detail-top"><span>BOOK DETAILS</span><button id="closeBookDetails" type="button" aria-label="Close book details">×</button></header>
       <div class="ce-detail-scroll">
         <div class="ce-detail-hero">
@@ -5157,6 +5183,61 @@ html[data-ui-theme="bento"][data-theme="dark"] #bookDetailsModal .ce-detail-fact
     });
     document.getElementById("closeBookDetails").addEventListener("click", () => closeTransientOverlay("details"));
     document.getElementById("bookDetailsModal").addEventListener("click", event => { if (event.target === event.currentTarget) closeTransientOverlay("details"); });
+
+    // v116: Swiggy Instamart style sheet - phones only. The window opens as a partial sheet;
+    // swiping up (anywhere when its content is at the top, or on the header/action bars) expands it
+    // to full screen; swiping down from the top shrinks it back, and dragging the header down closes it.
+    (function () {
+      const detailsModal = document.getElementById("bookDetailsModal");
+      const detailsPanel = detailsModal?.querySelector(".ce-detail-panel");
+      const detailsScroller = detailsModal?.querySelector(".ce-detail-scroll");
+      if (!detailsModal || !detailsPanel || !detailsScroller) return;
+      const sheetMode = matchMedia("(max-width: 639.5px)");
+      const FULL_CLASS = "ce-sheet-full";
+      let gesture = null;
+      // Always reopen as the partial sheet, never stuck full screen from the last visit.
+      new MutationObserver(() => { if (detailsModal.classList.contains("hidden")) detailsModal.classList.remove(FULL_CLASS); })
+        .observe(detailsModal, { attributes: true, attributeFilter: ["class"] });
+      detailsPanel.addEventListener("touchstart", event => {
+        if (!sheetMode.matches || detailsModal.classList.contains("hidden") || event.touches.length !== 1) { gesture = null; return; }
+        gesture = {
+          y: event.touches[0].clientY,
+          t: Date.now(),
+          onChrome: Boolean(event.target.closest(".ce-detail-top, .ce-details-actions")),
+          atTop: detailsScroller.scrollTop <= 1,
+          done: false,
+        };
+      }, { passive: true });
+      detailsPanel.addEventListener("touchmove", event => {
+        if (!gesture) return;
+        if (gesture.done) { event.preventDefault(); return; }
+        const dy = event.touches[0].clientY - gesture.y;
+        const full = detailsModal.classList.contains(FULL_CLASS);
+        if (!full && dy <= -28 && (gesture.onChrome || gesture.atTop)) {
+          detailsModal.classList.add(FULL_CLASS);
+          gesture.done = true;
+          event.preventDefault();
+        } else if (full && dy >= 28 && (gesture.onChrome || gesture.atTop)) {
+          detailsModal.classList.remove(FULL_CLASS);
+          gesture.done = true;
+          event.preventDefault();
+        } else if (!full && gesture.onChrome && dy >= 72) {
+          gesture.done = true;
+          closeTransientOverlay("details");
+        }
+      }, { passive: false });
+      detailsPanel.addEventListener("touchend", event => {
+        if (!gesture) return;
+        if (!gesture.done) {
+          const dy = event.changedTouches[0].clientY - gesture.y;
+          const velocity = dy / Math.max(1, Date.now() - gesture.t);
+          const full = detailsModal.classList.contains(FULL_CLASS);
+          if (!full && (dy <= -18 || velocity <= -0.35) && (gesture.onChrome || gesture.atTop)) detailsModal.classList.add(FULL_CLASS);
+          else if (full && (dy >= 18 || velocity >= 0.35) && (gesture.onChrome || gesture.atTop)) detailsModal.classList.remove(FULL_CLASS);
+        }
+        gesture = null;
+      }, { passive: true });
+    })();
     document.getElementById("detailsCart").addEventListener("click", () => addToCart(detailsBookId));
     document.getElementById("detailsBuy").addEventListener("click", () => { const id = detailsBookId; hideTransientOverlay("details"); buyNow(Number(id)); });
     document.getElementById("closeBuyModal").addEventListener("click", closeBuyModal);
