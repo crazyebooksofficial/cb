@@ -5196,7 +5196,7 @@ html[data-ui-theme="bento"][data-theme="dark"] #bookDetailsModal .ce-detail-fact
       const FULL_CLASS = "ce-sheet-full";
       let gesture = null;
       // Always reopen as the partial sheet, never stuck full screen from the last visit.
-      new MutationObserver(() => { if (detailsModal.classList.contains("hidden")) detailsModal.classList.remove(FULL_CLASS); })
+      new MutationObserver(() => { if (detailsModal.classList.contains("hidden") && detailsModal.classList.contains(FULL_CLASS)) detailsModal.classList.remove(FULL_CLASS); })
         .observe(detailsModal, { attributes: true, attributeFilter: ["class"] });
       detailsPanel.addEventListener("touchstart", event => {
         if (!sheetMode.matches || detailsModal.classList.contains("hidden") || event.touches.length !== 1) { gesture = null; return; }
